@@ -1,7 +1,8 @@
+from random import choice
 from turtle import Screen
 from border import Border
 from scoreboard import ScoreBoard
-from ball import Ball
+from ball import Ball, LEFT, RIGHT
 from paddle import Paddle
 
 
@@ -10,14 +11,15 @@ screen.setup(700, 700)
 screen.bgcolor('black')
 screen.tracer(0)
 
-your_paddle = Paddle((300, 20))
-rival_paddle = Paddle((-300, 20))
+p1_paddle = Paddle((-300, 20))
+p2_paddle = Paddle((300, 20))
 
 screen.listen()
-screen.onkey(your_paddle.move_up, 'Up')
-screen.onkey(your_paddle.move_down, 'Down')
-screen.onkey(rival_paddle.move_up, 'w')
-screen.onkey(rival_paddle.move_down, 's')
+screen.onkey(p1_paddle.move_up, 'w')
+screen.onkey(p1_paddle.move_down, 's')
+screen.onkey(p2_paddle.move_up, 'Up')
+screen.onkey(p2_paddle.move_down, 'Down')
+
 
 ball = Ball()
 scoreboard = ScoreBoard()
@@ -27,7 +29,6 @@ border = Border()
 border.draw_outer_border()
 border.draw_center_line()
 
-ball.initialize_the_ball()
 
 
 def game_loop():
@@ -36,20 +37,21 @@ def game_loop():
     side = ball.collision_with_wall()
 
     if side == 2:
-        scoreboard.rival_score += 1
+        scoreboard.p1_score += 1
         scoreboard.show_score()
-        ball.initialize_the_ball()
+        ball.initialize_the_ball(RIGHT)
     elif side == 1:
-        scoreboard.your_score += 1
+        scoreboard.p2_score += 1
         scoreboard.show_score()
-        ball.initialize_the_ball()
+        ball.initialize_the_ball(LEFT)
 
     if scoreboard.who_wins():
+        ball.ht()
         screen.update()
         return
 
-    ball.collision_with_paddle(your_paddle)
-    ball.collision_with_paddle(rival_paddle)
+    ball.collision_with_paddle(p1_paddle)
+    ball.collision_with_paddle(p2_paddle)
 
     screen.update()
     screen.ontimer(game_loop, 16)

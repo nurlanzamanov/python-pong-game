@@ -2,7 +2,8 @@ from turtle import Turtle
 from random import choice
 
 
-HEADINGS = [5, 10, 170, 175, 185, 190, 350, 355]
+RIGHT = [5, 10, 350, 355]
+LEFT = [170, 175, 185, 190]
 
 
 class Ball(Turtle):
@@ -12,38 +13,36 @@ class Ball(Turtle):
         self.color('pink')
         self.shapesize(stretch_wid=0.5, stretch_len=0.5)
         self.penup()
-        self.initialize_the_ball()
+        self.initialize_the_ball(choice([LEFT, RIGHT]))
 
-    def initialize_the_ball(self):
+    def initialize_the_ball(self, direction):
         self.teleport(0, 0)
-        self.setheading(choice(HEADINGS))
+        self.setheading(choice(direction))
 
     def move_the_ball(self):
         self.fd(7)
 
     def collision_with_wall(self):
-        if abs(self.ycor()) >= 350:
+        if abs(self.ycor()) >= 340:
             self.bounce_with_wall()
 
-        if self.xcor() >= 350:
+        if self.xcor() >= 340:
             return 2
-        elif self.xcor() <= -350:
+        elif self.xcor() <= -340:
             return 1
         else:
             return 0
 
     def bounce_with_wall(self):
-        if abs(self.xcor()) >= 350:
-            self.teleport(0, 0)
-            self.setheading(choice(HEADINGS))
-            self.move_the_ball()
-        else:
-            self.setheading(360 - self.heading())
+        self.setheading(360 - self.heading())
 
     def collision_with_paddle(self, paddle):
-        if (paddle.ycor() - 50 <= self.ycor() <= paddle.ycor() + 50
-                and paddle.xcor() - 10 <= self.xcor() <= paddle.xcor() + 10):
-            self.bounce_with_paddle()
+        if paddle.ycor() - 50 <= self.ycor() <= paddle.ycor() + 50 and paddle.xcor() - 10 <= self.xcor() <= paddle.xcor() + 10:
+            self.bounce_with_paddle(paddle)
 
-    def bounce_with_paddle(self):
-        self.setheading(180 - self.heading())
+    def bounce_with_paddle(self, paddle):
+        if paddle.xcor() < 0 and 90 < self.heading() < 270:
+            self.setheading(180 - self.heading())
+        elif paddle.xcor() > 0 and (90 > self.heading()  or self.heading() > 270):
+            self.setheading(180 - self.heading())
+
