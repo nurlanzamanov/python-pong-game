@@ -1,4 +1,4 @@
-# 🏓 Pong Game
+# 🏓 Python Pong Game
 
 A two-player Pong game built with Python and Turtle Graphics.
 
